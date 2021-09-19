@@ -37,6 +37,12 @@ resource "azurerm_network_security_group" "nsg" {
   tags     = "${(var.default_tags)}"
 }
 
+resource "azurerm_subnet_network_security_group_association" "nsg_associate" {
+  count                     = 2
+  subnet_id                 = "${element(azurerm_subnet.subnet1.*.id, count.index)}"
+  network_security_group_id = "${azurerm_network_security_group.nsg.id}"
+}
+  
 resource "azurerm_lb" "azlb" {
     name                = "${var.application}-${var.environment}-lb"
     resource_group_name = "${module.resource_group.resource_group_name}"
